@@ -1,0 +1,13 @@
+{
+    "name": "stormgeo/advisorcore",
+    "description": "The SDK to use Advisor Core API.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "StormGeo\\AdvisorCore\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {}
+}
