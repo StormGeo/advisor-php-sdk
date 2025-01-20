@@ -231,7 +231,6 @@ if (is_null($response->error)) {
 }
 ```
 
-
 #### Plan Information:
 ```php
 $response = $sdk->plan->getInfo();
@@ -247,7 +246,6 @@ if (is_null($response->error)) {
 #### Schema/Parameter:
 ```php
 // Arbitrary example on how to define a schema
-
 $schemaPayload = [
   'identifier' => 'arbitraryIdentifier',
   'arbitraryField1' => [
@@ -324,16 +322,16 @@ Available response types:
 Example:
 
 ```php
-const advisor = new AdvisorCore({
-  token: 'invalid-token',
-})
+use StormGeo\AdvisorCore\AdvisorCore;
 
-advisor.setHeaderAccept('application/xml')
-advisor.setHeaderAcceptLanguage('es-ES')
+$advisor = new AdvisorCore('invalid-token');
 
-let response = await advisor.plan.getInfo()
+advisor->setHeaderAccept('application/xml');
+advisor->setHeaderAcceptLanguage('es-ES');
 
-console.log(response.error)
+$response = $sdk->plan->getInfo();
+
+print_r(response->error);
 
 // <response>
 //   <error>
@@ -351,8 +349,8 @@ All the methods returns the same pattern:
 
 ```php
 {
-  "data": Any | null,
-  "error": Any | null,
+  "data": array|string|null,
+  "error": array|string|null,
 }
 ```
 
@@ -362,10 +360,10 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: number
-- **longitude**: number
-- **timezone**: number
-- **variables**: string[]
+- **latitude**: int
+- **longitude**: int
+- **timezone**: int
+- **variables**: array<string>
 - **startDate**: string
 - **endDate**: string
 
@@ -373,7 +371,7 @@ All the methods returns the same pattern:
 
 - **stationId**: string
 - **layer**: string
-- **variables**: string[]
+- **variables**: array<string>
 - **startDate**: string
 - **endDate**: string
 
@@ -381,34 +379,34 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: number
-- **longitude**: number
-- **variables**: string[]
+- **latitude**: int
+- **longitude**: int
+- **variables**: array<string>
 
 ### CurrentWeatherPayload
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: number
-- **longitude**: number
-- **timezone**: number
-- **variables**: string[]
+- **latitude**: int
+- **longitude**: int
+- **timezone**: int
+- **variables**: array<string>
 
 ### RadiusPayload
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: number
-- **longitude**: number
+- **latitude**: int
+- **longitude**: int
 - **startDate**: string
 - **endDate**: string
-- **radius**: number
+- **radius**: int
 
 ### GeometryPayload
 
 - **startDate**: string
 - **endDate**: string
-- **radius**: number
+- **radius**: int
 - **geometry**: string
 
 ### TmsPayload
@@ -417,8 +415,8 @@ All the methods returns the same pattern:
 - **mode**: string
 - **variable**: string
 - **aggregation**: string
-- **x**: number
-- **y**: number
-- **z**: number
+- **x**: int
+- **y**: int
+- **z**: int
 - **istep**: string
 - **fstep**: string
