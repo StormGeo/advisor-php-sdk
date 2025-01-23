@@ -34,10 +34,10 @@ Advisor Software Development Kit for nodeJS.
 To install this package, use the following command:
 
 ```bash
-composer require advisor-core
+composer require stormgeo/advisorcore
 ```
 
-Make sure you're using php 7 or higher. 
+Make sure you're using php 7 or higher. Using earlier php versions may result in unexpected behavior or incompatibilities.
 
 ## Routes
 
@@ -63,20 +63,20 @@ $payload = new WeatherPayload([
 ]);
 
 // requesting daily forecast chart image
-$response = $sdk->chart->getForecastDaily($payload);
+$response = $advisor->chart->getForecastDaily($payload);
 
 // requesting hourly forecast chart image
-$response = $sdk->chart->getForecastHourly($payload);
+$response = $advisor->chart->getForecastHourly($payload);
 
 // requesting daily observed chart image
-$response = $sdk->chart->getObservedDaily($payload);
+$response = $advisor->chart->getObservedDaily($payload);
 
 // requesting hourly observed chart image
-$response = $sdk->chart->getObservedHourly($payload);
+$response = $advisor->chart->getObservedHourly($payload);
 
 if (is_null($response->error)) {
   $file = fopen('chart.png', 'wb');
-  fwrite($file, $chart->data);
+  fwrite($file, $response->data);
   fclose($file);
 } else {
   print_r($response->error);
@@ -88,22 +88,22 @@ if (is_null($response->error)) {
 ```php
 use StormGeo\AdvisorCore\Payloads\ClimatologyPayload;
 
-$payload = new ClimatologyPayload([
+$climatologyPayload = new ClimatologyPayload([
   'localeId' => 3477,
   'variables' => ['precipitation']
 ]);
 
 // requesting daily climatology data
-$response = $sdk->climatology->getDaily($climatologyPayload);
+$response = $advisor->climatology->getDaily($climatologyPayload);
 
 // requesting monthly climatology data
-$response = $sdk->climatology->getMonthly($climatologyPayload);
+$response = $advisor->climatology->getMonthly($climatologyPayload);
 
 
 if (is_null($response->error)) {
-   print_r('Error trying to get data!');
-   print_r($response->data);
+  print_r($response->data);
 } else {
+  print_r('Error trying to get data!');
   print_r($response->error);
 }
 ```
@@ -118,12 +118,12 @@ $payload = new CurrentWeatherPayload([
   'variables' => ['temperature', 'precipitation']
 ]);
 
-$response = $sdk->currentWeather->get($payload);
+$response = $advisor->currentWeather->get($payload);
 
 if (is_null($response->error)) {
-   print_r('Error trying to get data!');
-   print_r($response->data);
+  print_r($response->data);
 } else {
+  print_r('Error trying to get data!');
   print_r($response->error);
 }
 ```
@@ -139,18 +139,18 @@ $payload = new WeatherPayload([
 ]);
 
 // requesting daily forecast data
-$response = $sdk->forecast->getDaily($payload);
+$response = $advisor->forecast->getDaily($payload);
 
 // requesting hourly forecast data
-$response = $sdk->forecast->getHourly($payload);
+$response = $advisor->forecast->getHourly($payload);
 
 // requesting period forecast data
-$response = $sdk->forecast->getPeriod($payload);
+$response = $advisor->forecast->getPeriod($payload);
 
 if (is_null($response->error)) {
-   print_r('Error trying to get data!');
-   print_r($response->data);
+  print_r($response->data);
 } else {
+  print_r('Error trying to get data!');
   print_r($response->error);
 }
 ```
@@ -158,12 +158,12 @@ if (is_null($response->error)) {
 
 #### Monitoring:
 ```php
-$response = $sdk->monitoring->getAlerts()
+$response = $advisor->monitoring->getAlerts();
 
 if (is_null($response->error)) {
-   print_r('Error trying to get data!');
-   print_r($response->data);
+  print_r($response->data);
 } else {
+  print_r('Error trying to get data!');
   print_r($response->error);
 }
 ```
@@ -182,13 +182,13 @@ $payload = new WeatherPayload([
 ]);
 
 // requesting daily observed data
-$response = $sdk->observed->getDaily($$payload);
+$response = $advisor->observed->getDaily($payload);
 
 // requesting hourly observed data
-$response = $sdk->observed->getHourly($payload);
+$response = $advisor->observed->getHourly($payload);
 
 // requesting period observed data
-$response = $sdk->observed->getPeriod($payload);
+$response = $advisor->observed->getPeriod($payload);
 
 
 $stationPayload = new StationPayload([
@@ -196,7 +196,7 @@ $stationPayload = new StationPayload([
 ]);
 
 // requesting station observed data
-$response = $sdk->observed->getStationData($stationPayload);
+$response = $advisor->observed->getStationData($stationPayload);
 
 
 $radiusPayload = new RadiusPayload([
@@ -205,40 +205,40 @@ $radiusPayload = new RadiusPayload([
 ]);
 
 // requesting fire-focus observed data
-$response = $sdk->observed->getFireFocus($radiusPayload);
+$response = $advisor->observed->getFireFocus($radiusPayload);
 
 // requesting lightning observed data
-$response = $sdk->observed->getLightning($radiusPayload);
+$response = $advisor->observed->getLightning($radiusPayload);
 
 
 $geometryPayload = new GeometryPayload([
   'startDate' => '2024-11-28 00:00:00',
   'endDate' => '2024-11-28 12:59:59',
-  'geometry' => '{\"type\": \"MultiPoint\", \"coordinates\": [[-41.88, -22.74]]}'
+  'geometry' => '{"type": "MultiPoint", "coordinates": [[-41.88, -22.74]]}'
 ]);
 
 // requesting fire-focus observed data by geometry
-$response = $sdk->observed->getFireFocusByGeometry($geometryPayload);
+$response = $advisor->observed->getFireFocusByGeometry($geometryPayload);
 
 // requesting lightning observed data by geometry
-$response = $sdk->observed->getLightningByGeometry($geometryPayload);
+$response = $advisor->observed->getLightningByGeometry($geometryPayload);
 
 if (is_null($response->error)) {
-   print_r('Error trying to get data!');
-   print_r($response->data);
+  print_r($response->data);
 } else {
+  print_r('Error trying to get data!');
   print_r($response->error);
 }
 ```
 
 #### Plan Information:
 ```php
-$response = $sdk->plan->getInfo();
+$response = $advisor->plan->getInfo();
 
 if (is_null($response->error)) {
-   print_r('Error trying to get data!');
-   print_r($response->data);
+  print_r($response->data);
 } else {
+  print_r('Error trying to get data!');
   print_r($response->error);
 }
 ```
@@ -262,18 +262,18 @@ $parametersPayload = [
 ];
 
 // requesting all schemas from token
-$response = $sdk->schema->getDefinition();
+$response = $advisor->schema->getDefinition();
 
 // requesting to upload a new schema
-$response = $sdk->schema->postDefinition($schemaPayload);
+$response = $advisor->schema->postDefinition($schemaPayload);
 
 // requesting to upload data to parameters from schema
-$response = $sdk->schema->postParameters$($parametersPayload);
+$response = $advisor->schema->postParameters($parametersPayload);
 
 if (is_null($response->error)) {
-   print_r('Error trying to get data!');
-   print_r($response->data);
+  print_r($response->data);
 } else {
+  print_r('Error trying to get data!');
   print_r($response->error);
 }
 ```
@@ -282,9 +282,10 @@ if (is_null($response->error)) {
 #### Tms (Tiles Map Server):
 ```php
 use StormGeo\AdvisorCore\Payloads\TmsPayload;
+
 $payload = new TmsPayload([
-  'istep' => '2024-12-25 10:00:00',
-  'fstep' => '2024-12-25 12:00:00',
+  'istep' => '2025-01-24 10:00:00',
+  'fstep' => '2025-01-25 12:00:00',
   'server' => 'a',
   'mode' => 'forecast',
   'variable' => 'precipitation',
@@ -294,14 +295,14 @@ $payload = new TmsPayload([
   'z' => 4
 ]);
 
-$response = $sdk->schema->get($payload);
+$response = $advisor->tms->get($payload);
 
-if (is_null($chart->error)) {
-  $file = fopen('chart.png', 'wb');
-  fwrite($file, $chart->data);
+if (is_null($response->error)) {
+  $file = fopen('tile.png', 'wb');
+  fwrite($file, $response->data);
   fclose($file);
 } else {
-  print_r($chart);
+  print_r($response);
 }
 ```
 
@@ -326,12 +327,12 @@ use StormGeo\AdvisorCore\AdvisorCore;
 
 $advisor = new AdvisorCore('invalid-token');
 
-advisor->setHeaderAccept('application/xml');
-advisor->setHeaderAcceptLanguage('es-ES');
+$advisor->setHeaderAccept('application/xml');
+$advisor->setHeaderAcceptLanguage('es-ES');
 
-$response = $sdk->plan->getInfo();
+$response = $advisor->plan->getInfo();
 
-print_r(response->error);
+print_r($response->error);
 
 // <response>
 //   <error>
