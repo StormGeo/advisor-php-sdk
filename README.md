@@ -4,6 +4,7 @@ Advisor Software Development Kit for nodeJS.
 
 ## Contents
 - [PHP SDK](#php-sdk)
+  - [How to get your token](https://www.climatempoconsultoria.com.br/contato/)
   - [Contents](#contents)
   - [Installation](#installation)
   - [Routes](#routes)
