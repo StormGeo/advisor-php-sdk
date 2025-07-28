@@ -1,6 +1,6 @@
 # PHP SDK
 
-Advisor Software Development Kit for nodeJS.
+Advisor Software Development Kit for PHP.
 
 ## Contents
 - [PHP SDK](#php-sdk)
@@ -28,6 +28,8 @@ Advisor Software Development Kit for nodeJS.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PlanInfoPayload](#planinfopayload)
+    - [RequestDetailsPayload](#requestdetailspayload)
 ---
 
 ## Installation
@@ -234,7 +236,20 @@ if (is_null($response->error)) {
 
 #### Plan Information:
 ```php
-$response = $advisor->plan->getInfo();
+$payload = new PlanInfoPayload([
+  'timezone' => -3
+]);
+
+$payloadForRequestDetails = new RequestDetailsPayload([
+  'page' => 1,
+  'pageSize' => 3
+]);
+
+// requesting plan information
+$response = $advisor->plan->getInfo($payload);
+
+// requesting access history
+$response = $advisor->plan->getRequestDetails($payloadForRequestDetails)
 
 if (is_null($response->error)) {
   print_r($response->data);
@@ -422,3 +437,16 @@ All the methods returns the same pattern:
 - **z**: int
 - **istep**: string
 - **fstep**: string
+
+### PlanInfoPayload
+
+- **timezone**: int
+
+### RequestDetailsPayload
+
+- **page**: int
+- **pageSize**: int
+- **path**: string
+- **status**: string
+- **startDate**: string
+- **endDate**: string

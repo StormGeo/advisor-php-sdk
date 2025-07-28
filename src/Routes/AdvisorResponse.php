@@ -21,7 +21,7 @@ class AdvisorResponse
   {
     if (!is_array($data)) {
       $dataToString = (string) $data;
-      $hasError = str_contains($dataToString, 'error');
+      $hasError = strpos($dataToString, 'error') !== false;
       $this->data = !$hasError ? $dataToString : null;
       $this->error = $hasError ? $dataToString : null;
     } else {
