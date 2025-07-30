@@ -10,6 +10,7 @@ use StormGeo\AdvisorCore\Routes\Header;
 use StormGeo\AdvisorCore\Routes\Monitoring;
 use StormGeo\AdvisorCore\Routes\Observed;
 use StormGeo\AdvisorCore\Routes\Plan;
+use StormGeo\AdvisorCore\Routes\Storage;
 use StormGeo\AdvisorCore\Routes\Schema;
 use StormGeo\AdvisorCore\Routes\Tms;
 
@@ -54,6 +55,11 @@ class AdvisorCore
   public $plan;
 
   /**
+   * @var Storage
+   */
+  public $storage;
+
+  /**
    * @var Schema
    */
   public $schema;
@@ -86,6 +92,7 @@ class AdvisorCore
     $this->monitoring = new Monitoring($token, $attempts, $delay, $this->headers);
     $this->observed = new Observed($token, $attempts, $delay, $this->headers);
     $this->plan = new Plan($token, $attempts, $delay, $this->headers);
+    $this->storage = new Storage($token, $attempts, $delay, $this->headers);
     $this->schema = new Schema($token, $attempts, $delay, $this->headers);
     $this->tms = new Tms($token, $attempts, $delay, $this->headers);
   }

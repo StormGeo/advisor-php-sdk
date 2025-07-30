@@ -16,6 +16,7 @@ Advisor Software Development Kit for PHP.
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
+      - [Storage:](#storage)
       - [Schema/Parameter:](#schemaparameter)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
@@ -30,6 +31,8 @@ Advisor Software Development Kit for PHP.
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
     - [RequestDetailsPayload](#requestdetailspayload)
+    - [StorageListPayload](#storagelistpayload)
+    - [StorageDownloadPayload](#storagedownloadpayload)
 ---
 
 ## Installation
@@ -259,6 +262,57 @@ if (is_null($response->error)) {
 }
 ```
 
+#### Storage:
+```php
+$payloadForListing = new StorageListPayload([
+  'page' => 1,
+  'pageSize' => 5
+]);
+
+$payloadForDownload = new StorageDownloadPayload([
+  'fileName' => 'Example.pdf',
+  'accessKey' => 'a1b2c3d4-0010'
+]);
+
+# requesting the files list
+$response = $advisor->storage->listFiles($payloadForListing);
+
+if (is_null($response->error)) {
+  print_r($response->data);
+} else {
+  print_r("Error trying to get data!");
+  print_r($response->error);
+}
+
+# downloading a file from the list
+$response = $advisor->storage->downloadFile($payloadForDownload);
+
+if (is_null($response->error)) {
+  $file = fopen("$payloadForDownload->fileName", 'wb');
+  fwrite($file, $response->data);
+  fclose($file);
+} else {
+  print_r("Error trying to get file!");
+  print_r($response->error);
+}
+
+# downloading a file by stream
+$response = $advisor->storage->downloadFileByStream($downloadPayload);
+
+if (is_null($response->error)) {
+  $file = fopen("$payloadForDownload->fileName", 'wb');
+  if (is_resource($response->data)) {
+    stream_copy_to_stream($response->data, $file);
+  } else {
+    fwrite($file, $response->data);
+  }
+  fclose($file);
+} else {
+  print_r("Error trying to get file!");
+  print_r($response->error);
+}
+```
+
 #### Schema/Parameter:
 ```php
 // Arbitrary example on how to define a schema
@@ -293,7 +347,6 @@ if (is_null($response->error)) {
   print_r($response->error);
 }
 ```
-
 
 #### Tms (Tiles Map Server):
 ```php
@@ -450,3 +503,17 @@ All the methods returns the same pattern:
 - **status**: string
 - **startDate**: string
 - **endDate**: string
+
+### StorageListPayload
+
+- **page**: int
+- **pageSize**: int
+- **startDate**: string
+- **endDate**: string
+- **fileName**: string
+- **fileExtension**: string
+
+### StorageDownloadPayload
+
+- **fileName**: string
+- **accessKey**: string

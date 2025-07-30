@@ -28,6 +28,9 @@ class Tms extends BaseRouter
 			$payload->z
     );
 
-    return parent::makeRequest('GET_IMAGE', $route . $this->formatQueryParams($payload->getQueryParams()));
+    return parent::makeRequest(
+      'GET_FILE',
+      $route . $this->formatQueryParams($payload->getQueryParams())
+    );
   }
 }

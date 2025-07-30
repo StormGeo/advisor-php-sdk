@@ -51,10 +51,13 @@ abstract class BaseRouter
    */
   protected function makeRequest($method, $route, $body = [])
   {
-    if ($method === 'GET' || $method === 'GET_IMAGE') {
+    if ($method === 'GET' || $method === 'GET_FILE' || $method === 'GET_STREAM') {
       return $this->retryRequest(
         function() use ($method, $route) {
-          return $this->makeGetRequest($this::BASE_URL . $route, $method === 'GET_IMAGE');
+          if ($method === 'GET_STREAM') {
+            return $this->makeGetRequestStream($this::BASE_URL . $route);
+          }
+          return $this->makeGetRequest($this::BASE_URL . $route, $method === 'GET_FILE');
         },
         $this->retries,
         $this->delay
@@ -101,6 +104,41 @@ abstract class BaseRouter
     return [
       'statusCode' => null,
       'data' => null
+    ];
+  }
+
+  /**
+   * @param   string      $url
+   * @return  array       array{statusCode:int|null,data:resource|string|array|null}
+   */
+  protected function makeGetRequestStream($url)
+  {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers->getFormattedHeaders());
+    curl_setopt($ch, CURLOPT_HTTPGET, true);
+
+    $stream = fopen('php://temp', 'w+');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+    curl_setopt($ch, CURLOPT_FILE, $stream);
+
+    curl_exec($ch);
+    $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    rewind($stream);
+
+    if ($statusCode >= 400) {
+      $contents = stream_get_contents($stream);
+      fclose($stream);
+      $transformToJson = $this->headers->get('Accept') === 'application/json';
+
+      return [
+        'statusCode' => $statusCode,
+        'data' => $transformToJson ? json_decode($contents, true) : $contents,
+      ];
+    }
+
+    return [
+      'statusCode' => $statusCode,
+      'data' => $stream,
     ];
   }
 

@@ -8,7 +8,7 @@ namespace StormGeo\AdvisorCore\Routes;
 class AdvisorResponse
 {
   /**
-   * @var array|string|null
+   * @var array|string|resource|null
    */
   public $data = null;
 
@@ -19,6 +19,12 @@ class AdvisorResponse
 
   public function __construct($data)
   {
+    if (is_resource($data)) {
+      $this->data = $data;
+      $this->error = null;
+      return;
+    }
+
     if (!is_array($data)) {
       $dataToString = (string) $data;
       $hasError = strpos($dataToString, 'error') !== false;

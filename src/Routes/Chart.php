@@ -18,7 +18,7 @@ class Chart extends BaseRouter
   public function getForecastDaily($payload)
   {
     return parent::makeRequest(
-      'GET_IMAGE',
+      'GET_FILE',
       '/v1/forecast/daily/chart' . $this->formatQueryParams($payload->getQueryParams())
     );
   }
@@ -32,7 +32,7 @@ class Chart extends BaseRouter
   public function getForecastHourly($payload)
   {
     return parent::makeRequest(
-      'GET_IMAGE',
+      'GET_FILE',
       '/v1/forecast/hourly/chart' . $this->formatQueryParams($payload->getQueryParams())
     );
   }
@@ -46,7 +46,7 @@ class Chart extends BaseRouter
   public function getObservedDaily($payload)
   {
     return parent::makeRequest(
-      'GET_IMAGE',
+      'GET_FILE',
       '/v1/observed/daily/chart' . $this->formatQueryParams($payload->getQueryParams())
     );
   }
@@ -60,7 +60,7 @@ class Chart extends BaseRouter
   public function getObservedHourly($payload)
   {
     return parent::makeRequest(
-      'GET_IMAGE',
+      'GET_FILE',
       '/v1/observed/hourly/chart' . $this->formatQueryParams($payload->getQueryParams())
     );
   }
