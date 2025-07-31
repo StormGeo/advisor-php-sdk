@@ -15,7 +15,7 @@ class StaticMap extends BaseRouter
    * @param   StaticMapPayload $payload
    * @return  AdvisorResponse
    */
-  public function get_static_map($payload)
+  public function getStaticMap($payload)
   {
     $route = sprintf(
       '/v1/map/%s/%s/%s',

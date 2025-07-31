@@ -57,7 +57,7 @@ class AdvisorCore
 
   /**
    * @var Schema
-  */
+   */
   public $schema;
 
   /**

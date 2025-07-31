@@ -313,7 +313,7 @@ $payload = new StaticMapPayload([
   'variable' => 'precipitation'
 ]);
 
-$response = $advisor->staticMap->get_static_map($payload);
+$response = $advisor->staticMap->getStaticMap($payload);
 
 if (is_null($response->error)) {
   $file = fopen('staticMap.png', 'wb');
@@ -351,7 +351,7 @@ if (is_null($response->error)) {
 $response = $advisor->storage->downloadFile($payloadForDownload);
 
 if (is_null($response->error)) {
-  $file = fopen("$payloadForDownload->fileName", 'wb');
+  $file = fopen($payloadForDownload->fileName, 'wb');
   fwrite($file, $response->data);
   fclose($file);
 } else {
@@ -363,7 +363,7 @@ if (is_null($response->error)) {
 $response = $advisor->storage->downloadFileByStream($downloadPayload);
 
 if (is_null($response->error)) {
-  $file = fopen("$payloadForDownload->fileName", 'wb');
+  $file = fopen($payloadForDownload->fileName, 'wb');
   if (is_resource($response->data)) {
     stream_copy_to_stream($response->data, $file);
   } else {
