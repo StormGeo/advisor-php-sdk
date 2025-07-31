@@ -199,7 +199,7 @@ abstract class BaseRouter
       }
     }
 
-    return $data;
+    return new AdvisorResponse($data);
   }
 
   /**
