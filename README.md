@@ -1,6 +1,6 @@
 # PHP SDK
 
-Advisor Software Development Kit for nodeJS.
+Advisor Software Development Kit for PHP.
 
 ## Contents
 - [PHP SDK](#php-sdk)
@@ -17,6 +17,8 @@ Advisor Software Development Kit for nodeJS.
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
       - [Schema/Parameter:](#schemaparameter)
+      - [Static Map:](#static-map)
+      - [Storage:](#storage)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
@@ -28,6 +30,11 @@ Advisor Software Development Kit for nodeJS.
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
+    - [PlanInfoPayload](#planinfopayload)
+    - [RequestDetailsPayload](#requestdetailspayload)
+    - [StorageListPayload](#storagelistpayload)
+    - [StorageDownloadPayload](#storagedownloadpayload)
+    - [StaticMapPayload](#staticmappayload)
 ---
 
 ## Installation
@@ -234,7 +241,20 @@ if (is_null($response->error)) {
 
 #### Plan Information:
 ```php
-$response = $advisor->plan->getInfo();
+$payload = new PlanInfoPayload([
+  'timezone' => -3  # default timezone is 0 (UTC)
+]);
+
+$payloadForRequestDetails = new RequestDetailsPayload([
+  'page' => 1,
+  'pageSize' => 3
+]);
+
+// requesting plan information
+$response = $advisor->plan->getInfo($payload);
+
+// requesting access history
+$response = $advisor->plan->getRequestDetails($payloadForRequestDetails)
 
 if (is_null($response->error)) {
   print_r($response->data);
@@ -251,7 +271,7 @@ $schemaPayload = [
   'identifier' => 'arbitraryIdentifier',
   'arbitraryField1' => [
     'type' => 'string',
-    'required' => true,
+    'required' => 'true',
     'length' => 125,
   ],
 ];
@@ -279,6 +299,82 @@ if (is_null($response->error)) {
 }
 ```
 
+#### Static Map:
+```php
+$payload = new StaticMapPayload([
+  'startDate' => '2025-07-21 00:00:00',
+  'endDate' => '2025-07-25 23:59:59',
+  'aggregation' => 'sum',
+  'dpi' => 100,
+  'title' => 'true',
+  'titlevariable' => 'precipitation',
+  'type' => 'periods',
+  'category' => 'observed',
+  'variable' => 'precipitation'
+]);
+
+$response = $advisor->staticMap->getStaticMap($payload);
+
+if (is_null($response->error)) {
+  $file = fopen('staticMap.png', 'wb');
+  fwrite($file, $response->data);
+  fclose($file);
+} else {
+  print_r('Error trying to get data!');
+  print_r($response->error);
+}
+```
+
+#### Storage:
+```php
+$payloadForListing = new StorageListPayload([
+  'page' => 1,
+  'pageSize' => 5
+]);
+
+$payloadForDownload = new StorageDownloadPayload([
+  'fileName' => 'Example.pdf',
+  'accessKey' => 'a1b2c3d4-0010'
+]);
+
+# requesting the files list
+$response = $advisor->storage->listFiles($payloadForListing);
+
+if (is_null($response->error)) {
+  print_r($response->data);
+} else {
+  print_r("Error trying to get data!");
+  print_r($response->error);
+}
+
+# downloading a file from the list
+$response = $advisor->storage->downloadFile($payloadForDownload);
+
+if (is_null($response->error)) {
+  $file = fopen($payloadForDownload->fileName, 'wb');
+  fwrite($file, $response->data);
+  fclose($file);
+} else {
+  print_r("Error trying to get file!");
+  print_r($response->error);
+}
+
+# downloading a file by stream
+$response = $advisor->storage->downloadFileByStream($downloadPayload);
+
+if (is_null($response->error)) {
+  $file = fopen($payloadForDownload->fileName, 'wb');
+  if (is_resource($response->data)) {
+    stream_copy_to_stream($response->data, $file);
+  } else {
+    fwrite($file, $response->data);
+  }
+  fclose($file);
+} else {
+  print_r("Error trying to get file!");
+  print_r($response->error);
+}
+```
 
 #### Tms (Tiles Map Server):
 ```php
@@ -293,7 +389,8 @@ $payload = new TmsPayload([
   'aggregation' => 'sum',
   'x' => 2,
   'y' => 3,
-  'z' => 4
+  'z' => 4,
+  'timezone' => -3  # default timezone is 0 (UTC)
 ]);
 
 $response = $advisor->tms->get($payload);
@@ -362,8 +459,8 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **timezone**: int
 - **variables**: array<string>
 - **startDate**: string
@@ -381,16 +478,16 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **variables**: array<string>
 
 ### CurrentWeatherPayload
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **timezone**: int
 - **variables**: array<string>
 
@@ -398,8 +495,8 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **startDate**: string
 - **endDate**: string
 - **radius**: int
@@ -422,3 +519,49 @@ All the methods returns the same pattern:
 - **z**: int
 - **istep**: string
 - **fstep**: string
+- **timezone**: int
+
+### PlanInfoPayload
+
+- **timezone**: int
+
+### RequestDetailsPayload
+
+- **page**: int
+- **pageSize**: int
+- **path**: string
+- **status**: string
+- **startDate**: string
+- **endDate**: string
+
+### StorageListPayload
+
+- **page**: int
+- **pageSize**: int
+- **startDate**: string
+- **endDate**: string
+- **fileName**: string
+- **fileExtension**: string
+
+### StorageDownloadPayload
+
+- **fileName**: string
+- **accessKey**: string
+
+### StaticMapPayload
+
+- **startate**: string
+- **endDate**: string
+- **aggregation**: string
+- **model**: string
+- **lonmin**: float
+- **latmin**: float
+- **lonmax**: float
+- **latmax**: float
+- **dpi**: int
+- **title**: bool
+- **titlevariable**: string
+- **hours**: int
+- **type**: string
+- **category**: string
+- **variable**: string
