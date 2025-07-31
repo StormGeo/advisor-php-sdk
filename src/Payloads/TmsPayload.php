@@ -5,6 +5,11 @@ namespace StormGeo\AdvisorCore\Payloads;
 class TmsPayload extends BasePayload
 {
   /**
+   * @var int
+   */
+	public $timezone;
+
+  /**
    * @var string
    */
   public $istep;
@@ -50,12 +55,12 @@ class TmsPayload extends BasePayload
 	public $z;
 
   /**
-   * @param array{istep:string,fstep:string,server:string,mode:string,variable:string,aggregation:string,x:int,y:int,z:int} $parameters
+   * @param array{timezone:int,istep:string,fstep:string,server:string,mode:string,variable:string,aggregation:string,x:int,y:int,z:int} $parameters
    */
   public function __construct($parameters = [])
   {
     parent::__construct(
-      ['istep', 'fstep', 'server', 'mode', 'variable', 'aggregation', 'x', 'y', 'z'],
+      ['timezone', 'istep', 'fstep', 'server', 'mode', 'variable', 'aggregation', 'x', 'y', 'z'],
       $parameters
     );
   }
@@ -66,6 +71,7 @@ class TmsPayload extends BasePayload
   public function getQueryParams()
   {
     return [
+      'timezone' => $this->timezone,
       'istep' => $this->istep,
 			'fstep' => $this->fstep,
     ];

@@ -16,8 +16,9 @@ Advisor Software Development Kit for PHP.
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
-      - [Storage:](#storage)
       - [Schema/Parameter:](#schemaparameter)
+      - [Static Map:](#static-map)
+      - [Storage:](#storage)
       - [Tms (Tiles Map Server):](#tms-tiles-map-server)
   - [Headers Configuration](#headers-configuration)
   - [Response Format](#response-format)
@@ -33,6 +34,7 @@ Advisor Software Development Kit for PHP.
     - [RequestDetailsPayload](#requestdetailspayload)
     - [StorageListPayload](#storagelistpayload)
     - [StorageDownloadPayload](#storagedownloadpayload)
+    - [StaticMapPayload](#staticmappayload)
 ---
 
 ## Installation
@@ -240,7 +242,7 @@ if (is_null($response->error)) {
 #### Plan Information:
 ```php
 $payload = new PlanInfoPayload([
-  'timezone' => -3
+  'timezone' => -3  # default timezone is 0 (UTC)
 ]);
 
 $payloadForRequestDetails = new RequestDetailsPayload([
@@ -256,6 +258,67 @@ $response = $advisor->plan->getRequestDetails($payloadForRequestDetails)
 
 if (is_null($response->error)) {
   print_r($response->data);
+} else {
+  print_r('Error trying to get data!');
+  print_r($response->error);
+}
+```
+
+#### Schema/Parameter:
+```php
+// Arbitrary example on how to define a schema
+$schemaPayload = [
+  'identifier' => 'arbitraryIdentifier',
+  'arbitraryField1' => [
+    'type' => 'string',
+    'required' => 'true',
+    'length' => 125,
+  ],
+];
+
+// Arbitrary example on how to upload data to parameters from schema 
+$parametersPayload = [
+  'identifier' => 'arbitraryIdentifier',
+  'arbitraryField1' => 'some text',
+];
+
+// requesting all schemas from token
+$response = $advisor->schema->getDefinition();
+
+// requesting to upload a new schema
+$response = $advisor->schema->postDefinition($schemaPayload);
+
+// requesting to upload data to parameters from schema
+$response = $advisor->schema->postParameters($parametersPayload);
+
+if (is_null($response->error)) {
+  print_r($response->data);
+} else {
+  print_r('Error trying to get data!');
+  print_r($response->error);
+}
+```
+
+#### Static Map:
+```php
+$payload = new StaticMapPayload([
+  'startDate' => '2025-07-21 00:00:00',
+  'endDate' => '2025-07-25 23:59:59',
+  'aggregation' => 'sum',
+  'dpi' => 100,
+  'title' => 'true',
+  'titlevariable' => 'precipitation',
+  'type' => 'periods',
+  'category' => 'observed',
+  'variable' => 'precipitation'
+]);
+
+$response = $advisor->staticMap->get_static_map($payload);
+
+if (is_null($response->error)) {
+  $file = fopen('staticMap.png', 'wb');
+  fwrite($file, $response->data);
+  fclose($file);
 } else {
   print_r('Error trying to get data!');
   print_r($response->error);
@@ -313,41 +376,6 @@ if (is_null($response->error)) {
 }
 ```
 
-#### Schema/Parameter:
-```php
-// Arbitrary example on how to define a schema
-$schemaPayload = [
-  'identifier' => 'arbitraryIdentifier',
-  'arbitraryField1' => [
-    'type' => 'string',
-    'required' => true,
-    'length' => 125,
-  ],
-];
-
-// Arbitrary example on how to upload data to parameters from schema 
-$parametersPayload = [
-  'identifier' => 'arbitraryIdentifier',
-  'arbitraryField1' => 'some text',
-];
-
-// requesting all schemas from token
-$response = $advisor->schema->getDefinition();
-
-// requesting to upload a new schema
-$response = $advisor->schema->postDefinition($schemaPayload);
-
-// requesting to upload data to parameters from schema
-$response = $advisor->schema->postParameters($parametersPayload);
-
-if (is_null($response->error)) {
-  print_r($response->data);
-} else {
-  print_r('Error trying to get data!');
-  print_r($response->error);
-}
-```
-
 #### Tms (Tiles Map Server):
 ```php
 use StormGeo\AdvisorCore\Payloads\TmsPayload;
@@ -361,7 +389,8 @@ $payload = new TmsPayload([
   'aggregation' => 'sum',
   'x' => 2,
   'y' => 3,
-  'z' => 4
+  'z' => 4,
+  'timezone' => -3  # default timezone is 0 (UTC)
 ]);
 
 $response = $advisor->tms->get($payload);
@@ -430,8 +459,8 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **timezone**: int
 - **variables**: array<string>
 - **startDate**: string
@@ -449,16 +478,16 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **variables**: array<string>
 
 ### CurrentWeatherPayload
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **timezone**: int
 - **variables**: array<string>
 
@@ -466,8 +495,8 @@ All the methods returns the same pattern:
 
 - **localeId**: string
 - **stationId**: string
-- **latitude**: int
-- **longitude**: int
+- **latitude**: float
+- **longitude**: float
 - **startDate**: string
 - **endDate**: string
 - **radius**: int
@@ -490,6 +519,7 @@ All the methods returns the same pattern:
 - **z**: int
 - **istep**: string
 - **fstep**: string
+- **timezone**: int
 
 ### PlanInfoPayload
 
@@ -517,3 +547,21 @@ All the methods returns the same pattern:
 
 - **fileName**: string
 - **accessKey**: string
+
+### StaticMapPayload
+
+- **startate**: string
+- **endDate**: string
+- **aggregation**: string
+- **model**: string
+- **lonmin**: float
+- **latmin**: float
+- **lonmax**: float
+- **latmax**: float
+- **dpi**: int
+- **title**: bool
+- **titlevariable**: string
+- **hours**: int
+- **type**: string
+- **category**: string
+- **variable**: string
