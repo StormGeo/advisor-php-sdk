@@ -190,7 +190,7 @@ abstract class BaseRouter
       $status = $response['statusCode'];
       $data = $response['data'];
 
-      if (!is_null($status) && $status < 500 && $status != 429) {
+      if (!is_null($status) && $status < 500) {
         return new AdvisorResponse($data);
       }
 
