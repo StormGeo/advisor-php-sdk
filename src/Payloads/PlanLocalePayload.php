@@ -10,35 +10,33 @@ class PlanLocalePayload extends BasePayload
 	public $localeId;
 
   /**
-   * @var string|null
+   * @var string
    */
   public $stationId;
 
   /**
-   * @var string|null
+   * @var string
    */
   public $latitude;
 
   /**
-   * @var string|null
+   * @var string
    */
   public $longitude;
 
   /**
-   * @param array{
-   *   localeId?:int,
-   *   stationId?:string,
-   *   latitude?:string,
-   *   longitude?:string
-   * } $parameters
+   * @param array{localeId:int,stationId:string,latitude:string,longitude:string} $parameters
    */
   public function __construct($parameters = [])
   {
-    parent::__construct(['localeId', 'stationId', 'latitude', 'longitude'], $parameters);
+    parent::__construct(
+      ['localeId', 'stationId', 'latitude', 'longitude'],
+      $parameters
+    );
   }
 
   /**
-   * @return array
+   * @var array
    */
   public function getQueryParams()
   {
