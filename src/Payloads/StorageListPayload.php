@@ -35,12 +35,17 @@ class StorageListPayload extends BasePayload
   public $fileExtension;
 
   /**
-   * @param array{page:int,pageSize:int,startDate:string,endDate:string,fileName:string,fileExtension:string} $parameters
+   * @var string[]
+   */
+  public $fileTypes;
+
+  /**
+   * @param array{page:int,pageSize:int,startDate:string,endDate:string,fileName:string,fileExtension:string,fileTypes:string[]} $parameters
    */
   public function __construct($parameters = [])
   {
     parent::__construct(
-      ['page', 'pageSize', 'startDate', 'endDate', 'fileName', 'fileExtension'],
+      ['page', 'pageSize', 'startDate', 'endDate', 'fileName', 'fileExtension', 'fileTypes'],
       $parameters
     );
   }

@@ -3,6 +3,7 @@
 namespace StormGeo\AdvisorCore\Routes;
 
 use StormGeo\AdvisorCore\Payloads\PlanInfoPayload;
+use StormGeo\AdvisorCore\Payloads\PlanLocalePayload;
 use StormGeo\AdvisorCore\Payloads\RequestDetailsPayload;
 
 /**
@@ -12,7 +13,7 @@ class Plan extends BaseRouter
 {
   /**
    * GET /v1/plan/{token}
-   * 
+   *
    * @param   PlanInfoPayload $payload
    * @return  AdvisorResponse
    */
@@ -22,13 +23,15 @@ class Plan extends BaseRouter
 
     return parent::makeRequest(
       'GET',
-      "/v1/plan/{$this->token}" . $queryParams
+      "/v1/plan/{$this->token}" . $queryParams,
+      [],
+      false
     );
   }
 
   /**
    * GET /v1/plan/request-details
-   * 
+   *
    * @param   RequestDetailsPayload $payload
    * @return  AdvisorResponse
    */
@@ -37,6 +40,20 @@ class Plan extends BaseRouter
     return parent::makeRequest(
       'GET',
       '/v1/plan/request-details' . $this->formatQueryParams($payload->getQueryParams())
+    );
+  }
+
+  /**
+   * GET /v1/plan/locale
+   *
+   * @param   PlanLocalePayload $payload
+   * @return  AdvisorResponse
+   */
+  public function getLocale($payload)
+  {
+    return parent::makeRequest(
+      'GET',
+      '/v1/plan/locale' . $this->formatQueryParams($payload->getQueryParams())
     );
   }
 }
