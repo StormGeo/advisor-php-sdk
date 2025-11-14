@@ -231,7 +231,7 @@ abstract class BaseRouter
     $formattedHeaders = $this->headers->getFormattedHeaders();
 
     if ($includeTokenHeader) {
-      $formattedHeaders[] = "token: {$this->token}";
+      $formattedHeaders[] = "x-advisor-token: {$this->token}";
     }
 
     return $formattedHeaders;
