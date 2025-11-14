@@ -31,6 +31,7 @@ Advisor Software Development Kit for PHP.
     - [GeometryPayload](#geometrypayload)
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
+    - [PlanLocalePayload](#planlocalepayload)
     - [RequestDetailsPayload](#requestdetailspayload)
     - [StorageListPayload](#storagelistpayload)
     - [StorageDownloadPayload](#storagedownloadpayload)
@@ -250,11 +251,21 @@ $payloadForRequestDetails = new RequestDetailsPayload([
   'pageSize' => 3
 ]);
 
+$localePayload = new PlanLocalePayload([
+  'localeId' => 3477,
+  'stationId' => 'BR-020',
+  'latitude' => '-23.55',
+  'longitude' => '-46.63'
+]);
+
 // requesting plan information
 $response = $advisor->plan->getInfo($payload);
 
 // requesting access history
-$response = $advisor->plan->getRequestDetails($payloadForRequestDetails)
+$response = $advisor->plan->getRequestDetails($payloadForRequestDetails);
+
+// requesting plan locale information
+$response = $advisor->plan->getLocale($localePayload);
 
 if (is_null($response->error)) {
   print_r($response->data);
@@ -524,6 +535,13 @@ All the methods returns the same pattern:
 ### PlanInfoPayload
 
 - **timezone**: int
+
+### PlanLocalePayload
+
+- **localeId**: int
+- **stationId** (optional): string
+- **latitude** (optional): string
+- **longitude** (optional): string
 
 ### RequestDetailsPayload
 
