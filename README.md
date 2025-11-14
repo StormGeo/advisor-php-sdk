@@ -253,9 +253,7 @@ $payloadForRequestDetails = new RequestDetailsPayload([
 
 $localePayload = new PlanLocalePayload([
   'localeId' => 3477,
-  'stationId' => 'BR-020',
-  'latitude' => '-23.55',
-  'longitude' => '-46.63'
+  // You can also set Latitude/Longitude or StationId instead of LocaleId
 ]);
 
 // requesting plan information
@@ -539,9 +537,9 @@ All the methods returns the same pattern:
 ### PlanLocalePayload
 
 - **localeId**: int
-- **stationId** (optional): string
-- **latitude** (optional): string
-- **longitude** (optional): string
+- **stationId**: string
+- **latitude**: string
+- **longitude**: string
 
 ### RequestDetailsPayload
 
