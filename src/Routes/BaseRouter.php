@@ -49,15 +49,15 @@ abstract class BaseRouter
    * @param   array             $body
    * @return  AdvisorResponse
    */
-  protected function makeRequest($method, $route, $body = [])
+  protected function makeRequest($method, $route, $body = [], $includeTokenHeader = true)
   {
     if ($method === 'GET' || $method === 'GET_FILE' || $method === 'GET_STREAM') {
       return $this->retryRequest(
-        function() use ($method, $route) {
+        function() use ($method, $route, $includeTokenHeader) {
           if ($method === 'GET_STREAM') {
-            return $this->makeGetRequestStream($this::BASE_URL . $route);
+            return $this->makeGetRequestStream($this::BASE_URL . $route, $includeTokenHeader);
           }
-          return $this->makeGetRequest($this::BASE_URL . $route, $method === 'GET_FILE');
+          return $this->makeGetRequest($this::BASE_URL . $route, $method === 'GET_FILE', $includeTokenHeader);
         },
         $this->retries,
         $this->delay
@@ -66,8 +66,8 @@ abstract class BaseRouter
 
     if ($method === 'POST') {
       return $this->retryRequest(
-        function() use ($route, $body) {
-          return $this->makePostRequest($this::BASE_URL . $route, $body);
+        function() use ($route, $body, $includeTokenHeader) {
+          return $this->makePostRequest($this::BASE_URL . $route, $body, $includeTokenHeader);
         },
         $this->retries,
         $this->delay
@@ -82,10 +82,10 @@ abstract class BaseRouter
    * @param   bool        $binaryReturn
    * @return  array
    */
-  protected function makeGetRequest($url, $binaryReturn = false)
+  protected function makeGetRequest($url, $binaryReturn = false, $includeTokenHeader = true)
   {
     $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers->getFormattedHeaders());
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->buildRequestHeaders($includeTokenHeader));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
 
@@ -111,10 +111,10 @@ abstract class BaseRouter
    * @param   string      $url
    * @return  array       array{statusCode:int|null,data:resource|string|array|null}
    */
-  protected function makeGetRequestStream($url)
+  protected function makeGetRequestStream($url, $includeTokenHeader = true)
   {
     $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers->getFormattedHeaders());
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->buildRequestHeaders($includeTokenHeader));
     curl_setopt($ch, CURLOPT_HTTPGET, true);
 
     $stream = fopen('php://temp', 'w+');
@@ -147,7 +147,7 @@ abstract class BaseRouter
    * @param   array       $body
    * @return  array
    */
-  protected function makePostRequest($url, $body)
+  protected function makePostRequest($url, $body, $includeTokenHeader = true)
   {
     $this->headers->set('Content-Type', 'application/json');
 
@@ -155,7 +155,7 @@ abstract class BaseRouter
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers->getFormattedHeaders());
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $this->buildRequestHeaders($includeTokenHeader));
 
     $response = curl_exec($ch);
     $responseInfo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -208,13 +208,32 @@ abstract class BaseRouter
    */
   protected function formatQueryParams($queryParams = null)
   {
-    $params = "?token={$this->token}";
-    $formattedParams = is_null($queryParams) ? '' : http_build_query($queryParams);
-    if (strlen($formattedParams) > 0) {
-      $params .= "&{$formattedParams}";
-      $params = preg_replace('/%5B[0-9]+%5D/simU', '[]', $params);
+    if (empty($queryParams)) {
+      return '';
     }
 
-    return $params;
+    $formattedParams = http_build_query($queryParams);
+    if (strlen($formattedParams) === 0) {
+      return '';
+    }
+
+    $formattedParams = preg_replace('/%5B[0-9]+%5D/simU', '[]', $formattedParams);
+
+    return "?{$formattedParams}";
+  }
+
+  /**
+   * @param   bool    $includeTokenHeader
+   * @return  array
+   */
+  protected function buildRequestHeaders($includeTokenHeader = true)
+  {
+    $formattedHeaders = $this->headers->getFormattedHeaders();
+
+    if ($includeTokenHeader) {
+      $formattedHeaders[] = "token: {$this->token}";
+    }
+
+    return $formattedHeaders;
   }
 }

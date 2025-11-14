@@ -23,7 +23,9 @@ class Plan extends BaseRouter
 
     return parent::makeRequest(
       'GET',
-      "/v1/plan/{$this->token}" . $queryParams
+      "/v1/plan/{$this->token}" . $queryParams,
+      [],
+      false
     );
   }
 
