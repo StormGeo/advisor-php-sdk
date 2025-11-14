@@ -13,7 +13,7 @@ class Plan extends BaseRouter
 {
   /**
    * GET /v1/plan/{token}
-   * 
+   *
    * @param   PlanInfoPayload $payload
    * @return  AdvisorResponse
    */
@@ -29,7 +29,7 @@ class Plan extends BaseRouter
 
   /**
    * GET /v1/plan/request-details
-   * 
+   *
    * @param   RequestDetailsPayload $payload
    * @return  AdvisorResponse
    */

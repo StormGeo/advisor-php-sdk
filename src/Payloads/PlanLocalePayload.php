@@ -7,7 +7,7 @@ class PlanLocalePayload extends BasePayload
   /**
    * @var int
    */
-	public $localeId;
+  public $localeId;
 
   /**
    * @var string

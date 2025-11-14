@@ -560,6 +560,7 @@ All the methods returns the same pattern:
 - **endDate**: string
 - **fileName**: string
 - **fileExtension**: string
+- **fileTypes**: string[]
 
 ### StorageDownloadPayload
 
