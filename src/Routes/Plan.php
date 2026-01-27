@@ -12,7 +12,7 @@ use StormGeo\AdvisorCore\Payloads\RequestDetailsPayload;
 class Plan extends BaseRouter
 {
   /**
-   * GET /v1/plan/{token}
+   * GET /v2/plan
    *
    * @param   PlanInfoPayload $payload
    * @return  AdvisorResponse
@@ -23,9 +23,9 @@ class Plan extends BaseRouter
 
     return parent::makeRequest(
       'GET',
-      "/v1/plan/{$this->token}" . $queryParams,
+      '/v2/plan' . $queryParams,
       [],
-      false
+      true
     );
   }
 

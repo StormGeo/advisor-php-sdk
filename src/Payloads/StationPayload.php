@@ -30,12 +30,17 @@ class StationPayload extends BasePayload
 	public $layer;
 
   /**
-   * @param array{stationId:string,startDate:string,endDate:string,variables:array<string>,layer:string} $parameters
+   * @var int
+   */
+	public $timezone;
+
+  /**
+   * @param array{stationId:string,startDate:string,endDate:string,variables:array<string>,layer:string,timezone:int} $parameters
    */
   public function __construct($parameters = [])
   {
     parent::__construct(
-      ['stationId', 'startDate', 'endDate', 'variables', 'layer'],
+      ['stationId', 'startDate', 'endDate', 'variables', 'layer', 'timezone'],
       $parameters
     );
   }
