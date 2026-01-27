@@ -479,6 +479,7 @@ All the methods returns the same pattern:
 
 - **stationId**: string
 - **layer**: string
+- **timezone**: int
 - **variables**: array<string>
 - **startDate**: string
 - **endDate**: string
