@@ -15,7 +15,9 @@ Advisor Software Development Kit for PHP.
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
+      - [Stations:](#stations)
       - [Plan Information:](#plan-information)
+      - [Pmtiles:](#pmtiles)
       - [Schema/Parameter:](#schemaparameter)
       - [Static Map:](#static-map)
       - [Storage:](#storage)
@@ -25,10 +27,12 @@ Advisor Software Development Kit for PHP.
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
     - [PlanLocalePayload](#planlocalepayload)
@@ -240,6 +244,26 @@ if (is_null($response->error)) {
 }
 ```
 
+#### Stations:
+```php
+use StormGeo\AdvisorCore\Payloads\StationsLastDataPayload;
+
+$payload = new StationsLastDataPayload([
+  'stationIds' => ['station-id-1', 'station-id-2'], // optional
+  'variables' => ['temperature', 'precipitation'] // optional
+]);
+
+// requesting last data from stations
+$response = $advisor->stations->getLastData($payload);
+
+if (is_null($response->error)) {
+  print_r($response->data);
+} else {
+  print_r('Error trying to get data!');
+  print_r($response->error);
+}
+```
+
 #### Plan Information:
 ```php
 $payload = new PlanInfoPayload([
@@ -413,6 +437,32 @@ if (is_null($response->error)) {
 }
 ```
 
+#### Pmtiles:
+```php
+use StormGeo\AdvisorCore\Payloads\PmtilesPayload;
+
+$payload = new PmtilesPayload([
+  'mode' => 'forecast',
+  'model' => 'ct2w15_as',
+  'aggregation' => 'sum',
+  'variable' => 'precipitation',
+  'istep' => '2026-03-06 00:00:00',
+  'fstep' => '2026-03-06 01:00:00',
+  'maxZoom' => 4,
+  'timezone' => -3  # optional, default timezone is 0 (UTC)
+]);
+
+$response = $advisor->pmtiles->get($payload);
+
+if (is_null($response->error)) {
+  $file = fopen('layer.pmtiles', 'wb');
+  fwrite($file, $response->data);
+  fclose($file);
+} else {
+  print_r($response);
+}
+```
+
 ## Headers Configuration
 
 You can also set headers to translate the error descriptions or to receive the response in a different format type. This functionality is only available for some routes, consult the API documentation to find out which routes have this functionality.
@@ -484,6 +534,11 @@ All the methods returns the same pattern:
 - **startDate**: string
 - **endDate**: string
 
+### StationsLastDataPayload
+
+- **stationIds**: array<string> (optional)
+- **variables**: array<string> (optional)
+
 ### ClimatologyPayload
 
 - **localeId**: string
@@ -529,6 +584,17 @@ All the methods returns the same pattern:
 - **z**: int
 - **istep**: string
 - **fstep**: string
+- **timezone**: int
+
+### PmtilesPayload
+
+- **mode**: string
+- **model**: string
+- **aggregation**: string
+- **variable**: string
+- **istep**: string
+- **fstep**: string
+- **maxZoom**: int
 - **timezone**: int
 
 ### PlanInfoPayload

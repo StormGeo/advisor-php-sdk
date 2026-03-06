@@ -93,7 +93,8 @@ abstract class BaseRouter
     $responseInfo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
     if ($response != false) {
-      $transformToJson = $this->headers->get('Accept') === 'application/json' && !$binaryReturn;
+      $isBinary = $binaryReturn && $responseInfo == 200;
+      $transformToJson = $this->headers->get('Accept') === 'application/json' && !$isBinary;
 
       return [
         'statusCode' => $responseInfo,
