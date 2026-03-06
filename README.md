@@ -15,6 +15,7 @@ Advisor Software Development Kit for PHP.
       - [Forecast:](#forecast)
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
+      - [Stations:](#stations)
       - [Plan Information:](#plan-information)
       - [Pmtiles:](#pmtiles)
       - [Schema/Parameter:](#schemaparameter)
@@ -26,6 +27,7 @@ Advisor Software Development Kit for PHP.
   - [Payload Types](#payload-types)
     - [WeatherPayload](#weatherpayload)
     - [StationPayload](#stationpayload)
+    - [StationsLastDataPayload](#stationslastdatapayload)
     - [ClimatologyPayload](#climatologypayload)
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
@@ -233,6 +235,26 @@ $response = $advisor->observed->getFireFocusByGeometry($geometryPayload);
 
 // requesting lightning observed data by geometry
 $response = $advisor->observed->getLightningByGeometry($geometryPayload);
+
+if (is_null($response->error)) {
+  print_r($response->data);
+} else {
+  print_r('Error trying to get data!');
+  print_r($response->error);
+}
+```
+
+#### Stations:
+```php
+use StormGeo\AdvisorCore\Payloads\StationsLastDataPayload;
+
+$payload = new StationsLastDataPayload([
+  'stationIds' => ['station-id-1', 'station-id-2'], // optional
+  'variables' => ['temperature', 'precipitation'] // optional
+]);
+
+// requesting last data from stations
+$response = $advisor->stations->getLastData($payload);
 
 if (is_null($response->error)) {
   print_r($response->data);
@@ -511,6 +533,11 @@ All the methods returns the same pattern:
 - **variables**: array<string>
 - **startDate**: string
 - **endDate**: string
+
+### StationsLastDataPayload
+
+- **stationIds**: array<string> (optional)
+- **variables**: array<string> (optional)
 
 ### ClimatologyPayload
 
