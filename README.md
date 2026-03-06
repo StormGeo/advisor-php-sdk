@@ -16,6 +16,7 @@ Advisor Software Development Kit for PHP.
       - [Monitoring:](#monitoring)
       - [Observed:](#observed)
       - [Plan Information:](#plan-information)
+      - [Pmtiles:](#pmtiles)
       - [Schema/Parameter:](#schemaparameter)
       - [Static Map:](#static-map)
       - [Storage:](#storage)
@@ -29,6 +30,7 @@ Advisor Software Development Kit for PHP.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [PmtilesPayload](#pmtilespayload)
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
     - [PlanLocalePayload](#planlocalepayload)
@@ -413,6 +415,32 @@ if (is_null($response->error)) {
 }
 ```
 
+#### Pmtiles:
+```php
+use StormGeo\AdvisorCore\Payloads\PmtilesPayload;
+
+$payload = new PmtilesPayload([
+  'mode' => 'forecast',
+  'model' => 'ct2w15_as',
+  'aggregation' => 'sum',
+  'variable' => 'precipitation',
+  'istep' => '2026-03-06 00:00:00',
+  'fstep' => '2026-03-06 01:00:00',
+  'maxZoom' => 4,
+  'timezone' => -3  # optional, default timezone is 0 (UTC)
+]);
+
+$response = $advisor->pmtiles->get($payload);
+
+if (is_null($response->error)) {
+  $file = fopen('layer.pmtiles', 'wb');
+  fwrite($file, $response->data);
+  fclose($file);
+} else {
+  print_r($response);
+}
+```
+
 ## Headers Configuration
 
 You can also set headers to translate the error descriptions or to receive the response in a different format type. This functionality is only available for some routes, consult the API documentation to find out which routes have this functionality.
@@ -529,6 +557,17 @@ All the methods returns the same pattern:
 - **z**: int
 - **istep**: string
 - **fstep**: string
+- **timezone**: int
+
+### PmtilesPayload
+
+- **mode**: string
+- **model**: string
+- **aggregation**: string
+- **variable**: string
+- **istep**: string
+- **fstep**: string
+- **maxZoom**: int
 - **timezone**: int
 
 ### PlanInfoPayload

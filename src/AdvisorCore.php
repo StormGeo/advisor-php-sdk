@@ -10,6 +10,7 @@ use StormGeo\AdvisorCore\Routes\Header;
 use StormGeo\AdvisorCore\Routes\Monitoring;
 use StormGeo\AdvisorCore\Routes\Observed;
 use StormGeo\AdvisorCore\Routes\Plan;
+use StormGeo\AdvisorCore\Routes\Pmtiles;
 use StormGeo\AdvisorCore\Routes\Schema;
 use StormGeo\AdvisorCore\Routes\StaticMap;
 use StormGeo\AdvisorCore\Routes\Storage;
@@ -56,6 +57,11 @@ class AdvisorCore
   public $plan;
 
   /**
+   * @var Pmtiles
+   */
+  public $pmtiles;
+
+  /**
    * @var Schema
    */
   public $schema;
@@ -98,6 +104,7 @@ class AdvisorCore
     $this->monitoring = new Monitoring($token, $attempts, $delay, $this->headers);
     $this->observed = new Observed($token, $attempts, $delay, $this->headers);
     $this->plan = new Plan($token, $attempts, $delay, $this->headers);
+    $this->pmtiles = new Pmtiles($token, $attempts, $delay, $this->headers);
     $this->schema = new Schema($token, $attempts, $delay, $this->headers);
     $this->staticMap = new StaticMap($token, $attempts, $delay, $this->headers);
     $this->storage = new Storage($token, $attempts, $delay, $this->headers);
