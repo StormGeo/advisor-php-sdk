@@ -45,12 +45,32 @@ class PmtilesPayload extends BasePayload
   public $timezone;
 
   /**
-   * @param array{mode:string,model:string,aggregation:string,variable:string,istep:string,fstep:string,maxZoom:int,timezone:int} $parameters
+   * @var string
+  */
+  public $cmap;
+
+  /**
+   * @var string
+  */
+  public $dynamicElevation;
+
+  /**
+   * @var string
+  */
+  public $dynamicType;
+
+  /**
+   * @var string
+  */
+  public $dynamicVariable;
+
+  /**
+   * @param array{mode:string,model:string,aggregation:string,variable:string,istep:string,fstep:string,maxZoom:int,timezone:int,cmap:string,dynamicElevation:string,dynamicType:string,dynamicVariable:string} $parameters
    */
   public function __construct($parameters = [])
   {
     parent::__construct(
-      ['mode', 'model', 'aggregation', 'variable', 'istep', 'fstep', 'maxZoom', 'timezone'],
+      ['mode', 'model', 'aggregation', 'variable', 'istep', 'fstep', 'maxZoom', 'timezone', 'cmap', 'dynamicElevation', 'dynamicType', 'dynamicVariable'],
       $parameters
     );
   }
@@ -65,6 +85,10 @@ class PmtilesPayload extends BasePayload
       'fstep' => $this->fstep,
       'maxZoom' => $this->maxZoom,
       'timezone' => $this->timezone,
+      'cmap' => $this->cmap,
+      'dynamicElevation' => $this->dynamicElevation,
+      'dynamicType' => $this->dynamicType,
+      'dynamicVariable' => $this->dynamicVariable
     ];
   }
 }

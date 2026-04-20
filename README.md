@@ -622,6 +622,10 @@ All the methods returns the same pattern:
 - **fstep**: string
 - **maxZoom**: int
 - **timezone**: int
+- **cmap**: string
+- **dynamicElevation**: string
+- **dynamicType**: string
+- **dynamicVariable**: string
 
 ### PlanInfoPayload
 
