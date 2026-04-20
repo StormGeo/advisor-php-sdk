@@ -4,6 +4,7 @@ namespace StormGeo\AdvisorCore\Routes;
 
 use StormGeo\AdvisorCore\Payloads\WeatherPayload;
 use StormGeo\AdvisorCore\Payloads\GeometryPayload;
+use StormGeo\AdvisorCore\Payloads\LightningLitePayload;
 use StormGeo\AdvisorCore\Payloads\StationPayload;
 use StormGeo\AdvisorCore\Payloads\RadiusPayload;
 
@@ -69,6 +70,20 @@ class Observed extends BaseRouter
   }
 
   /**
+   * GET /v1/observed/lightning/details
+   * 
+   * @param   RadiusPayload $payload
+   * @return  AdvisorResponse
+   */
+  public function getLightningDetails($payload)
+  {
+    return parent::makeRequest(
+      'GET',
+      '/v1/observed/lightning/details' . $this->formatQueryParams($payload->getQueryParams())
+    );
+  }
+
+  /**
    * POST /v1/observed/lightning
    * 
    * @param   GeometryPayload $payload
@@ -79,6 +94,21 @@ class Observed extends BaseRouter
     return parent::makeRequest(
       'POST',
       '/v1/observed/lightning' . $this->formatQueryParams($payload->getQueryParams()),
+      $payload->getBody()
+    );
+  }
+
+  /**
+   * POST /v1/observed/lightning/lite
+   * 
+   * @param   LightningLitePayload $payload
+   * @return  AdvisorResponse
+   */
+  public function getLightningLite($payload)
+  {
+    return parent::makeRequest(
+      'POST',
+      '/v1/observed/lightning/lite' . $this->formatQueryParams($payload->getQueryParams()),
       $payload->getBody()
     );
   }
