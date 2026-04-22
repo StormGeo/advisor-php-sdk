@@ -1,0 +1,67 @@
+name: SDK Integration Tests
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-integration-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  php-integration:
+    name: PHP integration tests
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft && github.event.pull_request.head.repo.full_name == github.repository }}
+    timeout-minutes: 20
+    env:
+      ADVISOR_TOKEN: ${{ secrets.ADVISOR_TOKEN }}
+      ADVISOR_STATION_ID: ${{ secrets.ADVISOR_STATION_ID }}
+      ADVISOR_GEOMETRY: ${{ secrets.ADVISOR_GEOMETRY }}
+      ADVISOR_STORAGE_FILE_NAME: ${{ secrets.ADVISOR_STORAGE_FILE_NAME }}
+      ADVISOR_STORAGE_ACCESS_KEY: ${{ secrets.ADVISOR_STORAGE_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate required integration secrets
+        shell: bash
+        run: |
+          missing=0
+
+          for name in \
+            ADVISOR_TOKEN \
+            ADVISOR_STATION_ID \
+            ADVISOR_GEOMETRY \
+            ADVISOR_STORAGE_FILE_NAME \
+            ADVISOR_STORAGE_ACCESS_KEY
+          do
+            if [ -z "${!name}" ]; then
+              echo "::error title=Missing secret::$name is not configured for this repository."
+              missing=1
+            fi
+          done
+
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+          extensions: mbstring, intl, json
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Run integration tests
+        run: composer test:integration
