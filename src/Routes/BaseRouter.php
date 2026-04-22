@@ -88,6 +88,8 @@ abstract class BaseRouter
     curl_setopt($ch, CURLOPT_HTTPHEADER, $this->buildRequestHeaders($includeTokenHeader));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
     $response = curl_exec($ch);
     $responseInfo = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -117,6 +119,8 @@ abstract class BaseRouter
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $this->buildRequestHeaders($includeTokenHeader));
     curl_setopt($ch, CURLOPT_HTTPGET, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
     $stream = fopen('php://temp', 'w+');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);

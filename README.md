@@ -32,6 +32,7 @@ Advisor Software Development Kit for PHP.
     - [CurrentWeatherPayload](#currentweatherpayload)
     - [RadiusPayload](#radiuspayload)
     - [GeometryPayload](#geometrypayload)
+    - [LightningLitePayload](#lightninglitepayload)
     - [PmtilesPayload](#pmtilespayload)
     - [TmsPayload](#tmspayload)
     - [PlanInfoPayload](#planinfopayload)
@@ -186,6 +187,7 @@ if (is_null($response->error)) {
 ```php
 use StormGeo\AdvisorCore\Payloads\WeatherPayload;
 use StormGeo\AdvisorCore\Payloads\GeometryPayload;
+use StormGeo\AdvisorCore\Payloads\LightningLitePayload;
 use StormGeo\AdvisorCore\Payloads\RadiusPayload;
 use StormGeo\AdvisorCore\Payloads\StationPayload;
 
@@ -223,6 +225,9 @@ $response = $advisor->observed->getFireFocus($radiusPayload);
 // requesting lightning observed data
 $response = $advisor->observed->getLightning($radiusPayload);
 
+// requesting lightning observed details data
+$response = $advisor->observed->getLightningDetails($radiusPayload);
+
 
 $geometryPayload = new GeometryPayload([
   'startDate' => '2024-11-28 00:00:00',
@@ -230,11 +235,22 @@ $geometryPayload = new GeometryPayload([
   'geometry' => '{"type": "MultiPoint", "coordinates": [[-41.88, -22.74]]}'
 ]);
 
+$lightningLitePayload = new LightningLitePayload([
+  'startDate' => '2024-11-28 00:00:00',
+  'endDate' => '2024-11-28 12:59:59',
+  'geometry' => '{"type": "MultiPoint", "coordinates": [[-41.88, -22.74]]}',
+  'page' => 1,
+  'pageSize' => 10
+]);
+
 // requesting fire-focus observed data by geometry
 $response = $advisor->observed->getFireFocusByGeometry($geometryPayload);
 
 // requesting lightning observed data by geometry
 $response = $advisor->observed->getLightningByGeometry($geometryPayload);
+
+// requesting lightning lite observed data by geometry
+$response = $advisor->observed->getLightningLite($lightningLitePayload);
 
 if (is_null($response->error)) {
   print_r($response->data);
@@ -573,6 +589,16 @@ All the methods returns the same pattern:
 - **radius**: int
 - **geometry**: string
 
+### LightningLitePayload
+
+- **startDate**: string
+- **endDate**: string
+- **radius**: int
+- **geometry**: string
+- **page**: int
+- **pageSize**: int
+- **sources**: array
+
 ### TmsPayload
 
 - **server**: string
@@ -596,6 +622,10 @@ All the methods returns the same pattern:
 - **fstep**: string
 - **maxZoom**: int
 - **timezone**: int
+- **cmap**: string
+- **dynamicElevation**: string
+- **dynamicType**: string
+- **dynamicVariable**: string
 
 ### PlanInfoPayload
 

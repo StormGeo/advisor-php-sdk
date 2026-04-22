@@ -105,9 +105,22 @@ class StaticMapPayload extends BasePayload
       'lonmax' => $this->lonmax,
       'latmax' => $this->latmax,
       'dpi' => $this->dpi,
-      'title' => $this->title,
+      'title' => $this->formatBooleanQueryValue($this->title),
       'titlevariable' => $this->titlevariable,
       'hours' => $this->hours
     ];
+  }
+
+  /**
+   * @param mixed $value
+   * @return mixed
+   */
+  private function formatBooleanQueryValue($value)
+  {
+    if (!is_bool($value)) {
+      return $value;
+    }
+
+    return $value ? 'true' : 'false';
   }
 }

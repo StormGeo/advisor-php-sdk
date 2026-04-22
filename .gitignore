@@ -1,2 +1,4 @@
 vendor/
 runner.php
+.env.integration.local
+.phpunit.result.cache
