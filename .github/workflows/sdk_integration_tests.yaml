@@ -1,4 +1,4 @@
-name: PHP SDK Integration Tests
+name: SDK Integration Tests
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: php-sdk-integration-tests-${{ github.event.pull_request.number }}
+  group: sdk-integration-tests-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
